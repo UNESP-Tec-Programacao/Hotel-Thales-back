@@ -1,0 +1,42 @@
+# Java 17
+*.class
+*.jar
+*.war
+*.ear
+*.log
+hs_err_pid*
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+out/
+
+# VSCode
+.vscode/
+
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
+
+# Spring
+target/
+*.log
+
+# MySQL
+*.sql
+
+# Logs
+*.log
+*.out
+
+# Sistema Operacional
+.DS_Store
+Thumbs.db
+
+# Outros
+*.bak
+*.swp
+*.swo
