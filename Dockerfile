@@ -1,5 +1,5 @@
 # Usando uma imagem do Tomcat
-FROM tomcat:9-jdk21-slim
+FROM tomcat:9.0-jdk21-slim
 
 # Copiar o arquivo WAR para o Tomcat
 COPY target/Hotel-Thales-back.war /usr/local/tomcat/webapps/
