@@ -1,9 +1,16 @@
 FROM maven:3.9-eclipse-temurin-21 AS builder
 WORKDIR /app
-COPY Thales-Hotel/pom.xml .
-COPY Thales-Hotel/src ./src
-RUN mvn clean package && \
-    find /app/target -name '*.war' -exec cp {} /app/target/application.war \;
+# Copia toda a estrutura do projeto Maven
+COPY Thales-Hotel .
+# Verifica a estrutura de arquivos (para debug)
+RUN ls -la && \
+    ls -la src && \
+    ls -la target || true
+# Executa o build com output detalhado
+RUN mvn clean package -X && \
+    ls -la target && \
+    find /app/target -name '*.war' -exec echo "WAR encontrado: {}" \; && \
+    cp /app/target/*.war /app/target/application.war
 
 FROM eclipse-temurin:21-jre-jammy
 
