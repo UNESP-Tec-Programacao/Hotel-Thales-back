@@ -1,17 +1,18 @@
-# Usando uma imagem do OpenJDK 21
+FROM maven:3.8.6-openjdk-21 AS builder
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package
+
 FROM openjdk:21-jdk-slim
 
-# Baixar e configurar o Tomcat
-RUN apt-get update && apt-get install -y wget && \
-    wget https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.62/bin/apache-tomcat-9.0.62.tar.gz && \
-    tar -xvzf apache-tomcat-9.0.62.tar.gz && \
-    mv apache-tomcat-9.0.62 /opt/tomcat
+RUN apt-get update && apt-get install -y wget &&
+wget https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.62/bin/apache-tomcat-9.0.62.tar.gz &&
+tar -xvzf apache-tomcat-9.0.62.tar.gz &&
+mv apache-tomcat-9.0.62 /opt/tomcat &&
+rm apache-tomcat-9.0.62.tar.gz
 
-# Copiar o WAR para o Tomcat
-COPY target/Hotel-Thales-back.war /opt/tomcat/webapps/
+COPY --from=builder /app/target/Hotel-Thales-back.war /opt/tomcat/webapps/
 
-# Expor a porta do Tomcat
 EXPOSE 8080
-
-# Iniciar o Tomcat
 CMD ["/opt/tomcat/bin/catalina.sh", "run"]
