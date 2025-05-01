@@ -23,6 +23,21 @@ RUN apt-get update && \
     mv apache-tomcat-9.0.62 /opt/tomcat && \
     rm apache-tomcat-9.0.62.tar.gz
 
+# Configuração do Tomcat Manager (usuário/senha)
+RUN echo '<?xml version="1.0" encoding="UTF-8"?> \
+<tomcat-users xmlns="http://tomcat.apache.org/xml" \
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" \
+              xsi:schemaLocation="http://tomcat.apache.org/xml tomcat-users.xsd" \
+              version="1.0"> \
+  <role rolename="manager-gui"/> \
+  <role rolename="admin-gui"/> \
+  <user username="admin" password="senha123" roles="manager-gui,admin-gui"/> \
+</tomcat-users>' > /opt/tomcat/conf/tomcat-users.xml
+
+# Permite acesso remoto ao Manager
+RUN sed -i 's|<Valve className="org.apache.catalina.valves.RemoteAddrValve" allow="127\.\d+\.\d+\.\d+|<!-- & -->|' /opt/tomcat/webapps/manager/META-INF/context.xml && \
+    sed -i 's|<Valve className="org.apache.catalina.valves.RemoteAddrValve" allow="127\.\d+\.\d+\.\d+|<!-- & -->|' /opt/tomcat/webapps/host-manager/META-INF/context.xml
+
 # Copia o WAR para o Tomcat
 COPY --from=builder /app/target/app.war /opt/tomcat/webapps/ROOT.war
 
