@@ -1,10 +1,10 @@
-FROM maven:3.8.6-jdk-11 AS builder
+FROM maven:3.9-eclipse-temurin-21 AS builder
 WORKDIR /app
 COPY Thales-Hotel/pom.xml .
 COPY Thales-Hotel/src ./src
 RUN mvn clean package
 
-FROM openjdk:21-jdk-slim
+FROM eclipse-temurin:21-jre-jammy
 
 RUN apt-get update && apt-get install -y wget && \
     wget https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.62/bin/apache-tomcat-9.0.62.tar.gz && \
