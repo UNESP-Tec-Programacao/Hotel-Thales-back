@@ -1,7 +1,7 @@
 FROM maven:3.8.6-jdk-11 AS builder
 WORKDIR /app
-COPY pom.xml .
-COPY src ./src
+COPY Thales-Hotel/pom.xml .
+COPY Thales-Hotel/src ./src
 RUN mvn clean package
 
 FROM openjdk:21-jdk-slim
@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y wget && \
     mv apache-tomcat-9.0.62 /opt/tomcat && \
     rm apache-tomcat-9.0.62.tar.gz
 
-COPY --from=builder /app/target/Hotel-Thales-back.war /opt/tomcat/webapps/
+COPY --from=builder /app/target/Thales-Hotel-1.0-SNAPSHOT.war /opt/tomcat/webapps/Hotel-Thales-back.war
 
 EXPOSE 8080
 CMD ["/opt/tomcat/bin/catalina.sh", "run"]
