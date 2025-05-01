@@ -1,14 +1,11 @@
-# Use uma imagem oficial do OpenJDK
-FROM openjdk:21-jdk-slim
+# Usando uma imagem do Tomcat
+FROM tomcat:9-jdk21-slim
 
-# Defina o diretório de trabalho no container
-WORKDIR /app
+# Copiar o arquivo WAR para o Tomcat
+COPY target/Hotel-Thales-back.war /usr/local/tomcat/webapps/
 
-# Copie o arquivo JAR gerado para o container
-COPY target/Thales-Hotel-1.0-SNAPSHOT.jar /app
-
-# Exponha a porta que sua aplicação Java vai usar
+# Expor a porta do Tomcat
 EXPOSE 8080
 
-# Comando para executar o arquivo JAR
-CMD ["java", "-jar", "Thales-Hotel-1.0-SNAPSHOT.jar"]
+# Iniciar o Tomcat
+CMD ["catalina.sh", "run"]
