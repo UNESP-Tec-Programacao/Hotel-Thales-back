@@ -8,7 +8,7 @@ COPY Thales-Hotel/pom.xml .
 COPY Thales-Hotel/src ./src
 
 # Build do projeto
-RUN mvn clean install --file ./Thales-Hotel/pom.xml
+RUN mvn clean package ./Thales-Hotel
 #RUN mvn clean package
 
 # Verifica e renomeia o arquivo WAR gerado
