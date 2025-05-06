@@ -38,9 +38,21 @@ RUN echo '<?xml version="1.0" encoding="UTF-8"?> \
 RUN sed -i 's|<Valve className="org.apache.catalina.valves.RemoteAddrValve" allow="127\.\d+\.\d+\.\d+|<!-- & -->|' /opt/tomcat/webapps/manager/META-INF/context.xml && \
     sed -i 's|<Valve className="org.apache.catalina.valves.RemoteAddrValve" allow="127\.\d+\.\d+\.\d+|<!-- & -->|' /opt/tomcat/webapps/host-manager/META-INF/context.xml
 
+# Configuração de upload de arquivos grandes para Tomcat (200MB)
+RUN sed -i 's|<Context>|<Context maxPostSize="209715200">|' /opt/tomcat/webapps/manager/META-INF/context.xml && \
+    sed -i 's|<Context>|<Context maxPostSize="209715200">|' /opt/tomcat/webapps/host-manager/META-INF/context.xml
+
 # Copia o WAR para o Tomcat
 COPY --from=builder /app/target/app.war /opt/tomcat/webapps/ROOT.war
 
-# Configuração final
-EXPOSE 8080
+# Ajuste de memória para Tomcat
+ENV CATALINA_OPTS="-Xms512m -Xmx1024m -Dfile.encoding=UTF-8"
+
+# Configuração de tempo de espera para conexões longas (uploads demorados)
+RUN echo "server.tomcat.connection-timeout=60000" >> /opt/tomcat/webapps/ROOT/WEB-INF/classes/application.properties
+
+# Expor a porta do Tomcat
+EXPOSE 10253
+
+# Iniciar o Tomcat
 CMD ["/opt/tomcat/bin/catalina.sh", "run"]
