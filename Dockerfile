@@ -48,11 +48,8 @@ COPY --from=builder /app/target/app.war /opt/tomcat/webapps/ROOT.war
 # Ajuste de memória para Tomcat
 ENV CATALINA_OPTS="-Xms512m -Xmx1024m -Dfile.encoding=UTF-8"
 
-# Configuração de tempo de espera para conexões longas (uploads demorados)
-RUN echo "server.tomcat.connection-timeout=60000" >> /opt/tomcat/webapps/ROOT/WEB-INF/classes/application.properties
-
 # Expor a porta do Tomcat
-EXPOSE 10253
+EXPOSE 8080
 
 # Iniciar o Tomcat
 CMD ["/opt/tomcat/bin/catalina.sh", "run"]
