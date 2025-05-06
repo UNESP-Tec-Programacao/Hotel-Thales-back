@@ -142,6 +142,7 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>Thales-Hotel</finalName>
     </build>
     
 </project>
