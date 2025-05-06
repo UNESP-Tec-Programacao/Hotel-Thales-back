@@ -14,9 +14,6 @@ public class UserAddress {
     private Long id;
 
     @OneToOne
-    private User user;
-
-    @OneToOne
     private Address address;
 
 }

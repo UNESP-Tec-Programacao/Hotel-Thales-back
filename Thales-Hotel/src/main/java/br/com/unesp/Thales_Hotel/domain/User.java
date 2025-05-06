@@ -24,7 +24,15 @@ public class User {
     private String mail;
     @Column(length = 14)
     private String phoneNumber;
+    @Column(length = 10)
+    private String houseNumber;
+    @Column(length = 8)
+    private String ibge;
+    @Column(length = 8)
+    private String cep;
     @OneToOne(cascade = CascadeType.PERSIST)
     private UserAddress userAddress;
+    @Column(nullable = false, length = 15)
+    private String cpf;
 
 }

@@ -1,5 +1,6 @@
 package br.com.unesp.Thales_Hotel.infra.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -14,26 +15,29 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
+    @Autowired
+    private UUIDAuthFilter uuidAuthFilter;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable) //
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/public/**").permitAll()
                         .anyRequest().authenticated()
                 )
+                .addFilterBefore(uuidAuthFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
                 .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }
 
-    // Usuário fixo na memória
     @Bean
     public UserDetailsService users() {
         UserDetails user = User
                 .withUsername("admin")
-                .password("{noop}1234") // {noop} = senha sem codificação
-                .roles("USER")
+                .password("{noop}1234")
+                .roles("ADMIN")
                 .build();
         return new InMemoryUserDetailsManager(user);
     }
