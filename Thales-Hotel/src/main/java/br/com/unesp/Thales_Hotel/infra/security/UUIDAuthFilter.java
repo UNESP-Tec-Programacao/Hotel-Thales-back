@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.IOException;
 import java.util.List;
 
-import static java.lang.StringTemplate.STR;
 
 @Component
 public class UUIDAuthFilter extends OncePerRequestFilter {
