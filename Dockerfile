@@ -1,26 +1,22 @@
-# Estágio de build (Maven)
+# Etapa 1: Build com Maven
 FROM maven:3.9-eclipse-temurin-21 AS builder
 
 WORKDIR /app
 
-# Copia o pom.xml e o código-fonte (ajuste o caminho se necessário)
-COPY pom.xml .          # Se pom.xml estiver na raiz do projeto
-COPY src ./src          # Se src/ estiver na raiz
+COPY Thales-Hotel/pom.xml .
+COPY Thales-Hotel/src ./src
 
-# Build do projeto (ignora testes para acelerar o deploy)
-RUN mvn clean package -DskipTests
+RUN mvn clean package
 
-# Padroniza o nome do .war para "app.war" (evita problemas no Tomcat)
-RUN cp /app/target/*.war /app/target/app.war
+# Etapa 2: Runtime com JDK (para apps Spring Boot com Tomcat embutido)
+FROM eclipse-temurin:21-jdk
 
-# --- Estágio final (Tomcat 9) ---
-FROM tomcat:9.0-jdk17-openjdk-slim
+WORKDIR /app
 
-# Copia o .war para o Tomcat (ROOT.war = roda na raiz "/")
-COPY --from=builder /app/target/app.war /usr/local/tomcat/webapps/ROOT.war
+# Copia o artefato gerado da etapa anterior
+COPY --from=builder /app/target/Thales-Hotel.jar app.jar
 
-# Porta exposta (Tomcat usa 8080 por padrão)
+# Expõe a porta padrão do Spring Boot/Tomcat
 EXPOSE 8080
 
-# Comando de start (obrigatório para o Railway)
-CMD ["catalina.sh", "run"]
+ENTRYPOINT ["java", "--enable-preview", "-jar", "app.jar"]
