@@ -1,13 +1,14 @@
-# Estágio de build (Maven)
-FROM maven:3.9-eclipse-temurin-21 AS builder
-WORKDIR /app
-COPY pom.xml .
-COPY src ./src
-RUN mvn clean package -DskipTests
-RUN cp /app/target/*.war /app/target/app.war
+# Imagem base com Java 21
+FROM eclipse-temurin:21-jdk
 
-# Estágio final (Tomcat 9 - formato correto para ghcr.io)
-FROM ghcr.io/tomcat/tomcat:9.0-jdk17-openjdk  
-COPY --from=builder /app/target/app.war /usr/local/tomcat/webapps/ROOT.war
+# Diretório de trabalho dentro do container
+WORKDIR /app
+
+# Copia o arquivo WAR gerado para o container
+COPY target/Thales-Hotel.war app.war
+
+# Exposição da porta padrão do Spring Boot
 EXPOSE 8080
-CMD ["catalina.sh", "run"]
+
+# Comando para rodar o app
+ENTRYPOINT ["java", "-jar", "app.war"]
