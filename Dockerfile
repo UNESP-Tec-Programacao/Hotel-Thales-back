@@ -14,7 +14,7 @@ RUN mvn clean package -DskipTests
 RUN cp /app/target/*.war /app/target/app.war
 
 # --- Estágio final (Tomcat 9) ---
-FROM tomcat:9.0-jdk17-openjdk-slim
+FROM ghcr.io/tomcat/tomcat:9.0-jdk17  # Alternativa ao Docker Hub
 
 # Copia o .war para o Tomcat (ROOT.war = roda na raiz "/")
 COPY --from=builder /app/target/app.war /usr/local/tomcat/webapps/ROOT.war
