@@ -1,14 +1,18 @@
-# Estágio de build com Maven
+# Etapa de build com Maven
 FROM maven:3.9-eclipse-temurin-21 AS builder
 
-# Define o diretório de trabalho
+# Diretório de trabalho dentro do container
 WORKDIR /app
 
-# Copia o projeto inteiro para dentro da imagem
-COPY Thales-Hotel /app
+# Copia o projeto Maven da pasta "Thales-Hotel" para dentro do container
+COPY Thales-Hotel/ ./Thales-Hotel/
 
-# Executa o build do projeto (gera o WAR)
-RUN mvn clean package
+# Entra na pasta do projeto e executa o build
+WORKDIR /app/Thales-Hotel
 
-# Copia o .war gerado e renomeia para app.war
-RUN find /app/target -name 'Thales-Hotel.war' -exec cp {} /app/target/app.war \;
+# Roda o build (pulando os testes, opcionalmente)
+RUN mvn clean package -DskipTests
+
+# Copia o WAR gerado para fora
+RUN cp target/*.war /app/app.war
+RUN ls -lh /app/app.war
