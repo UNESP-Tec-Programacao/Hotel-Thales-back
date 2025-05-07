@@ -14,10 +14,10 @@ FROM eclipse-temurin:21-jdk
 WORKDIR /app
 
 # Copia o artefato gerado da etapa anterior
-COPY --from=builder /app/target/Thales-Hotel.war app.war
+COPY --from=builder /app/target/Thales-Hotel.jar app.jar
 
 # Expõe a porta padrão do Spring Boot/Tomcat
 EXPOSE 8080
 
-# Executa a aplicação
-ENTRYPOINT ["java", "-jar", "app.war"]
+ENTRYPOINT ["java", "--enable-preview", "-jar", "app.jar"]
+
