@@ -1,14 +1,15 @@
-# Imagem base com Java 21
-FROM eclipse-temurin:21-jdk
+# Estágio de build com Maven
+FROM maven:3.9-eclipse-temurin-21 AS builder
 
-# Diretório de trabalho dentro do container
 WORKDIR /app
 
-# Copia o arquivo WAR gerado para o container
-COPY target/Thales-Hotel.war app.war
+# Copia apenas os arquivos necessários
+COPY Thales-Hotel/pom.xml .
+COPY Thales-Hotel/src ./src
 
-# Exposição da porta padrão do Spring Boot
-EXPOSE 8080
+# Build do projeto
+#RUN mvn clean package ./Thales-Hotel
+RUN mvn clean package
 
-# Comando para rodar o app
-ENTRYPOINT ["java", "-jar", "app.war"]
+# Verifica e renomeia o arquivo WAR gerado
+RUN find /app/target -name 'Thales-Hotel.war' -exec cp {} /app/target/app.war \;
