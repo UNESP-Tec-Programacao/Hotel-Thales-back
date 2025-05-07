@@ -13,7 +13,7 @@
     <groupId>br.com.unesp</groupId>
     <artifactId>Thales-Hotel</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging> <!-- A tag packaging agora está aqui -->
+    <packaging>jar</packaging> <!-- A tag packaging agora está aqui -->
     <name>Thales-Hotel</name>
     <description>Backend API from Thales Hotel</description>
     <url/>
