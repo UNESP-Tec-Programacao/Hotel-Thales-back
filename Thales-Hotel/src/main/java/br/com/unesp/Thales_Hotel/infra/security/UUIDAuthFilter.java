@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.IOException;
 import java.util.List;
 
-import static java.lang.StringTemplate.STR;
 
 @Component
 public class UUIDAuthFilter extends OncePerRequestFilter {
@@ -33,7 +32,7 @@ public class UUIDAuthFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        System.out.println(STR."Autenticando: \{request.getRequestURI()}");
+        System.out.println("Autenticando: " + request.getRequestURI());
 
         String path = request.getRequestURI();
         if (path.startsWith("/public")) {
@@ -42,7 +41,7 @@ public class UUIDAuthFilter extends OncePerRequestFilter {
         }
 
         String uuid = request.getHeader("Authorization");
-        System.out.println(STR."UUID recebido: [\{uuid}]");
+        System.out.println("UUID recebido: " + uuid);
 
         if (uuid == null || !loginService.verifyIfUserIsLoggedByUuid(uuid)) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Usuário não autorizado");
