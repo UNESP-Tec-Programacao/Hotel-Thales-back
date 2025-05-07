@@ -20,4 +20,4 @@ COPY --from=builder /app/target/Thales-Hotel.war app.war
 EXPOSE 8080
 
 # Executa a aplicação
-ENTRYPOINT ["java", "--enable-preview", "-jar", "app.war"]
+ENTRYPOINT ["java", "-jar", "app.war"]
