@@ -1,7 +1,10 @@
 package br.com.unesp.Thales_Hotel.controllers;
 
 import br.com.unesp.Thales_Hotel.domain.Reserve;
+import br.com.unesp.Thales_Hotel.responses.ApiResponse;
 import br.com.unesp.Thales_Hotel.services.ReserveService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,34 +19,54 @@ public class ReserveController {
     }
 
     @GetMapping
-    public List<Reserve> returnAll() {
-        return this.reserveService.returnAll();
+    public ResponseEntity<ApiResponse<List<Reserve>>> returnAll() {
+        List<Reserve> reserves = reserveService.returnAll();
+        return ResponseEntity.ok(new ApiResponse<>(200, "List of reserves", reserves));
     }
 
     @GetMapping("/{id}")
-    public Reserve findById(@PathVariable Long id) {
-        return this.reserveService.findById(id);
+    public ResponseEntity<ApiResponse<Reserve>> findById(@PathVariable Long id) {
+        Reserve reserve = reserveService.findById(id);
+        if (reserve != null) {
+            return ResponseEntity.ok(new ApiResponse<>(200, "Reserve found", reserve));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse<>(404, "Reserve not found"));
+        }
     }
 
     @PostMapping("/create")
-    public String create(@RequestBody Reserve room) {
-        return this.reserveService.createOrUpdate(room)
-                ? "Created"
-                : "An error has occurred when saving a new room";
+    public ResponseEntity<ApiResponse<Void>> create(@RequestBody Reserve reserve) {
+        boolean created = reserveService.createOrUpdate(reserve);
+        if (created) {
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(new ApiResponse<>(201, "Reserve created successfully"));
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(500, "Error creating reserve"));
+        }
     }
 
     @PutMapping("/{id}")
-    public String update(@PathVariable Long id, @RequestBody Reserve room) {
-        room.setId(id);
-        return this.reserveService.createOrUpdate(room)
-                ? "Updated"
-                : "Error updating room";
+    public ResponseEntity<ApiResponse<Void>> update(@PathVariable Long id, @RequestBody Reserve reserve) {
+        reserve.setId(id);
+        boolean updated = reserveService.createOrUpdate(reserve);
+        if (updated) {
+            return ResponseEntity.ok(new ApiResponse<>(200, "Reserve updated successfully"));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse<>(404, "Reserve not found or update failed"));
+        }
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id) {
-        return this.reserveService.delete(id)
-                ? "Deleted"
-                : "Reserve not found or couldn't be deleted";
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
+        boolean deleted = reserveService.delete(id);
+        if (deleted) {
+            return ResponseEntity.ok(new ApiResponse<>(200, "Reserve deleted successfully"));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse<>(404, "Reserve not found or deletion failed"));
+        }
     }
 }
