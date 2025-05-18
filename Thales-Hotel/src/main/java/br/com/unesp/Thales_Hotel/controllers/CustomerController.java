@@ -20,8 +20,11 @@ public class CustomerController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<Customer>>> returnAll() {
-        List<Customer> customers = this.customerService.returnAll();
-        return ResponseEntity.ok(new ApiResponse<>(200, "List of customers", customers));
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        200, "List of customers", this.customerService.returnAll()
+                )
+        );
     }
 
     @GetMapping("/{id}")
