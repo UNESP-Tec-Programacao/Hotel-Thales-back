@@ -1,15 +1,22 @@
-# Estágio de build com Maven
+# Etapa 1: Build com Maven
 FROM maven:3.9-eclipse-temurin-21 AS builder
 
 WORKDIR /app
 
-# Copia apenas os arquivos necessários
 COPY Thales-Hotel/pom.xml .
 COPY Thales-Hotel/src ./src
 
-# Build do projeto
-#RUN mvn clean package ./Thales-Hotel
 RUN mvn clean package
 
-# Verifica e renomeia o arquivo WAR gerado
-RUN find /app/target -name 'Thales-Hotel.war' -exec cp {} /app/target/app.war \;
+# Etapa 2: Runtime com JDK (para apps Spring Boot com Tomcat embutido)
+FROM eclipse-temurin:21-jdk
+
+WORKDIR /app
+
+# Copia o artefato gerado da etapa anterior
+COPY --from=builder /app/target/Thales-Hotel.jar app.jar
+
+# Expõe a porta padrão do Spring Boot/Tomcat
+EXPOSE 8080
+
+ENTRYPOINT ["java", "--enable-preview", "-jar", "app.jar"]
