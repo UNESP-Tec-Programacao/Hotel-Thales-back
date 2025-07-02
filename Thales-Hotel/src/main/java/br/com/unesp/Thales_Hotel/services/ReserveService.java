@@ -5,6 +5,9 @@ import br.com.unesp.Thales_Hotel.repositories.ReserveJPA;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,5 +44,17 @@ public class ReserveService {
         } catch (Exception exception) {
             return false;
         }
+    }
+
+
+    public int countRoomsToBeFreedToday() {
+        // Define início do dia e fim do dia no fuso local
+        LocalDate today = LocalDate.now(ZoneId.systemDefault());
+        Instant startOfDay = today.atStartOfDay(ZoneId.systemDefault()).toInstant();
+        Instant endOfDay = today.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant().minusMillis(1);
+
+        List<Long> roomIds = reserveJPA.findRoomIdsWithReservationsEndingBetween(startOfDay, endOfDay);
+        // Retorna o número de quartos liberados hoje (sem repetir)
+        return (int) roomIds.stream().distinct().count();
     }
 }

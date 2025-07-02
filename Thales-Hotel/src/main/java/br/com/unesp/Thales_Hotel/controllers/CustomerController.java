@@ -38,6 +38,26 @@ public class CustomerController {
         }
     }
 
+    @GetMapping("/cpf/{cpf}")
+    public ResponseEntity<ApiResponse<Customer>> findByIdentify(@PathVariable String cpf) {
+        String rawCpf = cpf.replaceAll("\\D", "");
+        if (rawCpf.length() != 11) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(400, "CPF inválido"));
+        }
+
+        String formattedCpf = rawCpf.replaceAll("(\\d{3})(\\d{3})(\\d{3})(\\d{2})", "$1.$2.$3-$4");
+
+        Customer customer = this.customerService.findByIdentify(formattedCpf);
+
+        if (customer != null) {
+            return ResponseEntity.ok(new ApiResponse<>(200, "Customer found", customer));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse<>(404, "Customer not found"));
+        }
+    }
+
+
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<Void>> create(@RequestBody Customer customer) {
         boolean created = this.customerService.createOrUpdate(customer);
@@ -72,4 +92,9 @@ public class CustomerController {
                     .body(new ApiResponse<>(404, "Customer not found or deletion failed"));
         }
     }
+    public static String maskCpf(String cpf) {
+        if (cpf == null || cpf.length() != 11) return cpf;
+        return cpf.replaceAll("(\\d{3})(\\d{3})(\\d{3})(\\d{2})", "$1.$2.$3-$4");
+    }
+
 }
