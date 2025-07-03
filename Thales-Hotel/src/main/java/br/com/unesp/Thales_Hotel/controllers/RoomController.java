@@ -12,7 +12,7 @@ import java.time.Instant;
 import java.util.List;
 
 @RestController
-@RequestMapping("public/room")
+@RequestMapping("/room")
 public class RoomController {
     private final RoomService roomService;
     private final ReserveService reserveService;
