@@ -8,6 +8,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +34,15 @@ public class UserService {
     }
 
     public User findByCpf(String cpf){
-        return this.userJPA.findByCpf(cpf).orElse(null);
+        User user = new User();
+        Optional<List<User>> usuarios;
+        usuarios = this.userJPA.findByCpf(cpf);
+        if(usuarios.isPresent()){
+            user = usuarios.get().getFirst();
+            return user;
+        }else{
+            return null;
+        }
     }
 
     @Transactional

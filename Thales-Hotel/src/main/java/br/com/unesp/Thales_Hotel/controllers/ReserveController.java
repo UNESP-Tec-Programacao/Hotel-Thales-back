@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("public/reserve")
+@RequestMapping("/reserve")
 public class ReserveController {
     private final ReserveService reserveService;
 
@@ -68,5 +68,17 @@ public class ReserveController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse<>(404, "Reserve not found or deletion failed"));
         }
+    }
+
+    @GetMapping("/rooms-freed-today")
+    public ResponseEntity<ApiResponse<Integer>> getRoomsFreedToday() {
+        int count = reserveService.countRoomsToBeFreedToday();
+        return ResponseEntity.ok(new ApiResponse<>(200, "Number of rooms freed today", count));
+    }
+
+    @GetMapping("/reserved")
+    public ResponseEntity<ApiResponse<List<Reserve>>> reserved(){
+        return ResponseEntity.ok(new ApiResponse<>(200, "Number of reservations ending today", reserveService.reserveds()));
+
     }
 }

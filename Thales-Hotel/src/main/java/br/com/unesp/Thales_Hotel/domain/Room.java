@@ -30,11 +30,15 @@ public class Room {
     @Column(nullable = false)
     private Integer number;
 
-    public Room(String nome, String category, Double price, Integer floor, Integer number) {
-        this.name = nome;
+    @Column(nullable = false)
+    private Integer guestNumber;
+
+    public Room(String name, String category, Double price, Integer floor, Integer number, Integer guestNumber) {
+        this.name = name;
         this.category = category;
         this.price = price;
         this.floor = floor;
         this.number = number;
+        this.guestNumber = guestNumber;
     }
 }

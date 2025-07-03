@@ -1,13 +1,11 @@
 package br.com.unesp.Thales_Hotel.services;
 
 import br.com.unesp.Thales_Hotel.domain.Customer;
-import br.com.unesp.Thales_Hotel.domain.Room;
 import br.com.unesp.Thales_Hotel.repositories.CustomerJPA;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CustomerService {
@@ -38,10 +36,6 @@ public class CustomerService {
 
     public Customer findByIdentify(String identify) {
         return this.customerJPA.findByIdentify(identify).orElse(null);
-    }
-
-    public Boolean CustomerExists(Customer user) {
-        return this.customerJPA.findByIdentify(user.getMail()).isPresent();
     }
 
     public Boolean delete(Long id) {

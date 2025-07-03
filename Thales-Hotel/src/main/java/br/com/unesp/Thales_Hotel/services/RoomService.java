@@ -6,6 +6,7 @@ import br.com.unesp.Thales_Hotel.repositories.RoomJPA;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,5 +47,9 @@ public class RoomService {
         } catch (Exception exception) {
             return false;
         }
+    }
+
+    public List<Room> findAvailableRooms(Instant now) {
+        return roomJPA.findAvailableRooms(now);
     }
 }

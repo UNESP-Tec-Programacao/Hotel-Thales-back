@@ -15,6 +15,7 @@ public class LoginService {
 
     private final UserService userService;
     private final LoginJPA loginJPA;
+    private User userLogando = new User();
 
     public LoginService(UserService userService, LoginJPA loginJPA) {
         this.userService = userService;
@@ -27,23 +28,23 @@ public class LoginService {
 
     public boolean verifyIfUserIsLoggedByUuid(String uuidStr) {
         UUID uuid = UUID.fromString(uuidStr);
-        return loginJPA.findByLoggedUser(uuid)
+        return loginJPA.findTopByLoggedUserOrderByInitialDateDesc(uuid)
                 .filter(login -> login.getExpirationDate().isAfter(Instant.now()))
                 .isPresent();
     }
 
     public boolean verifyIfUserIsLogged(String cpf) {
-        return loginJPA.findByLoggedUser(getUser(cpf).getId())
+        return loginJPA.findTopByLoggedUserOrderByInitialDateDesc(userLogando.getId())
                 .map(login -> !login.getExpirationDate().isBefore(Instant.now()))
                 .orElse(false);
     }
 
     public UUID login(String cpf){
-        User user = getUser(cpf);
+        userLogando = getUser(cpf);
         if (!verifyIfUserIsLogged(cpf)){
-            loginJPA.save(new Login(user.getId(), Instant.now(), Instant.now().plus(5, ChronoUnit.HOURS)));
+            loginJPA.save(new Login(userLogando.getId(), Instant.now(), Instant.now().plus(5, ChronoUnit.HOURS)));
         }
-        return user.getId();
+        return userLogando.getId();
     }
 
 

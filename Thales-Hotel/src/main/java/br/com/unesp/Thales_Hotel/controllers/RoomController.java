@@ -2,20 +2,24 @@ package br.com.unesp.Thales_Hotel.controllers;
 
 import br.com.unesp.Thales_Hotel.domain.Room;
 import br.com.unesp.Thales_Hotel.responses.ApiResponse;
+import br.com.unesp.Thales_Hotel.services.ReserveService;
 import br.com.unesp.Thales_Hotel.services.RoomService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.List;
 
 @RestController
-@RequestMapping("public/room")
+@RequestMapping("/room")
 public class RoomController {
     private final RoomService roomService;
+    private final ReserveService reserveService;
 
-    public RoomController(RoomService roomService) {
+    public RoomController(RoomService roomService, ReserveService reserveService) {
         this.roomService = roomService;
+        this.reserveService = reserveService;
     }
 
     @GetMapping
@@ -29,6 +33,17 @@ public class RoomController {
         Room room = roomService.findById(id);
         if (room != null) {
             return ResponseEntity.ok(new ApiResponse<>(200, "Room found", room));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse<>(404, "Room not found"));
+        }
+    }
+
+    @GetMapping("/{id}/guests")
+    public ResponseEntity<ApiResponse<Integer>> getGuests(@PathVariable Long id) {
+        Room room = roomService.findById(id);
+        if (room != null) {
+            return ResponseEntity.ok(new ApiResponse<>(200, "Room found", room.getGuestNumber()));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse<>(404, "Room not found"));
@@ -68,5 +83,16 @@ public class RoomController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse<>(404, "Room not found or deletion failed"));
         }
+    }
+    @GetMapping("/available-today")
+    public ResponseEntity<ApiResponse<List<Room>>> getAvailableRoomsToday() {
+        List<Room> availableRooms = roomService.findAvailableRooms(Instant.now());
+        return ResponseEntity.ok(new ApiResponse<>(200, "Available rooms today", availableRooms));
+    }
+
+    @GetMapping("/freed-today")
+    public ResponseEntity<ApiResponse<Integer>> getRoomsFreedToday() {
+        int count = reserveService.countRoomsToBeFreedToday();
+        return ResponseEntity.ok(new ApiResponse<>(200, "Number of rooms freed today", count));
     }
 }
