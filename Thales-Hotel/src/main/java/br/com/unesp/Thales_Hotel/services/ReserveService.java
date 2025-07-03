@@ -47,6 +47,13 @@ public class ReserveService {
     }
 
 
+    public List<Reserve> reserveds(){
+        return reserveJPA.findReservesWithEndsBeforeToday(
+                LocalDate.now()
+                .atStartOfDay(ZoneId.systemDefault()) // vira ZonedDateTime com hora 00:00
+                .toInstant());
+    }
+
     public int countRoomsToBeFreedToday() {
         // Define início do dia e fim do dia no fuso local
         LocalDate today = LocalDate.now(ZoneId.systemDefault());

@@ -75,4 +75,10 @@ public class ReserveController {
         int count = reserveService.countRoomsToBeFreedToday();
         return ResponseEntity.ok(new ApiResponse<>(200, "Number of rooms freed today", count));
     }
+
+    @GetMapping("/reserved")
+    public ResponseEntity<ApiResponse<List<Reserve>>> reserved(){
+        return ResponseEntity.ok(new ApiResponse<>(200, "Number of reservations ending today", reserveService.reserveds()));
+
+    }
 }
