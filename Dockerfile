@@ -9,7 +9,7 @@ COPY Thales-Hotel/src ./src
 RUN mvn clean package
 
 # Etapa 2: Runtime com JDK (para apps Spring Boot com Tomcat embutido)
-FROM eclipse-temurin:21-jdk
+FROM openjdk:21-jdk-slim
 
 WORKDIR /app
 
