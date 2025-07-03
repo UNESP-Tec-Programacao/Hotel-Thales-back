@@ -34,8 +34,13 @@ public class CustomerController {
             return ResponseEntity.ok(new ApiResponse<>(200, "Customer found", customer));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ApiResponse<>(404, "Customer not found"));
+                    .body(new ApiResponse<>(204, "Customer not found"));
         }
+    }
+
+    @GetMapping("/size")
+    public ResponseEntity<ApiResponse<Integer>> findCustomers(){
+        return ResponseEntity.ok(new ApiResponse<>(200, "Consumers", this.customerService.returnAll().size()));
     }
 
     @GetMapping("/cpf/{cpf}")
